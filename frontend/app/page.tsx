@@ -1,17 +1,17 @@
-import { redirect } from "next/navigation"
-import { createServerClient } from "@/lib/supabase-server"
+import { redirect } from "next/navigation";
+import { createClient, getSession } from "@/lib/supabase-server";
+
+// Prevent static generation
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const supabase = createServerClient()
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  const session = await getSession();
 
   // If user is not logged in, redirect to login page
   if (!session) {
-    redirect("/auth/login")
+    redirect("/auth/login");
   }
 
   // If user is logged in, redirect to dashboard
-  redirect("/dashboard")
+  redirect("/dashboard");
 }

@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
-import { createServerClient } from "@/lib/supabase-server";
+import { createClient, getSession } from "@/lib/supabase-server";
 import DashboardLayout from "@/components/layouts/dashboard-layout";
 import ChatInterface from "@/components/chat-interface";
 
+// Prevent static generation
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
-  const supabase = createServerClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const session = await getSession();
 
   // If user is not logged in, redirect to login page
   if (!session) {
@@ -15,6 +15,7 @@ export default async function DashboardPage() {
   }
 
   // Fetch user profile
+  const supabase = createClient();
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
